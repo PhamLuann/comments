@@ -3,6 +3,7 @@
 Comments is a Laravel package. With it you can easily implement native comments for your application.
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/phamluann/comments.svg?style=flat-square)](https://packagist.org/packages/phamluann/comments)
 [![Total Downloads](https://img.shields.io/packagist/dt/phamluann/comments.svg?style=flat-square)](https://packagist.org/packages/phamluann/comments)
+
 @overwrite from [laravelista/comments](https://github.com/laravelista/comments)
 
 
@@ -75,7 +76,7 @@ I plan to expand this chapter with more tutorials and articles. If you write som
 From the command line:
 
 ```bash
-composer require laravelista/comments
+composer require phamluann/comments
 ```
 
 
