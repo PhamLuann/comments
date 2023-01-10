@@ -82,4 +82,8 @@ class Comment extends Model
     {
         return $this->belongsTo(Config::get('comments.model'), 'child_id');
     }
+
+    public function like(){
+        return $this->hasMany(Config::get('comments.like'));
+    }
 }

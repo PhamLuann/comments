@@ -7,7 +7,7 @@
 @endphp
 
 @if($comments->count() < 1)
-    <div class="alert alert-warning">@lang('comments::comments.there_are_no_comments')</div>
+    <div class="mx-4 md:mx-24">@lang('comments::comments.there_are_no_comments')</div>
 @endif
 
 @php

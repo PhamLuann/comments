@@ -8,7 +8,7 @@ return [
      * package and change this configuration option to their extended model.
      */
     'model' => \Laravelista\Comments\Comment::class,
-
+    'like' => \Laravelista\Comments\Like::class,
     /**
      * You can customize the behaviour of these permissions by
      * creating your own and pointing to it here.
@@ -27,6 +27,7 @@ return [
      * or extend the \Laravelista\Comments\CommentController.
      */
     'controller' => '\Laravelista\Comments\WebCommentController',
+    'likeController' => '\Laravelista\Comments\LikeController',
 
     /**
      * Disable/enable the package routes.
