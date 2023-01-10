@@ -4,7 +4,7 @@
     $markdown->setSafeMode(true);
 @endphp
 
-<div id="comment-{{ $comment->getKey() }}" class="flex mx-12">
+<div id="comment-{{ $comment->getKey() }}" class="flex mx-4 lg:mx-24">
     <img class="w-20 h-20 rounded-full"
          src="https://www.gravatar.com/avatar/{{ md5($comment->commenter->email ?? $comment->guest_email) }}.jpg?s=64"
          alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">
