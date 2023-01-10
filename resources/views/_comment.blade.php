@@ -3,58 +3,67 @@
     // TODO: There should be a better place for this.
     $markdown->setSafeMode(true);
 @endphp
-
-<div id="comment-{{ $comment->getKey() }}" class="flex mx-4 lg:mx-24">
-    <img class="w-20 h-20 rounded-full"
-         src="https://www.gravatar.com/avatar/{{ md5($comment->commenter->email ?? $comment->guest_email) }}.jpg?s=64"
-         alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">
-    <div class="w-full ml-4">
-        <div class="min-h-[80px] w-full bg-sky-100 rounded-lg pl-4 pt-3">
-            <div class="flex items-center">
-                <h5 class="font-bold">{{ $comment->commenter->name ?? $comment->guest_name }} </h5>
-                <div class="w-2 h-2 bg-black rounded-full opacity-80 mx-3"></div>
-                <p class="text-sm opacity-70"> {{ $comment->created_at->diffForHumans() }}</p>
+<div class="">
+    <div id="comment-{{ $comment->getKey() }}" class="flex mb-5 @if($comment->parent != null) ml-14 md:ml-24 @endif">
+        <img class="w-12 h-12 md:w-20 md:h-20 rounded-full"
+             src="https://www.gravatar.com/avatar/{{ md5($comment->commenter->email ?? $comment->guest_email) }}.jpg?s=64"
+             alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">
+        <div class="w-full ml-2 md:ml-4">
+            <div class="min-h-[48px] md:min-h-[80px] w-full bg-gray-200 rounded-lg pl-4 pt-3 border-b border-gray-700">
+                <div class="block w-fit mb-2 md:flex items-center text-xs md:text-base border-b border-gray-300">
+                    <div class="flex">
+                        <h5 class="font-bold">{{ $comment->commenter->name ?? $comment->guest_name }} </h5>
+                        @if($comment->child_id != null)
+                            <span class="ml-1">reply to</span>
+                            <span class="ml-1 font-bold">{{$comment->parent->commenter->name}}</span>
+                        @endif
+                    </div>
+                    <div class="hidden md:block w-2 h-2 bg-black rounded-full opacity-80 mx-3"></div>
+                    <p class="text-xs opacity-60"> {{ $comment->created_at->diffForHumans() }}</p>
+                </div>
+                <div style="white-space: pre-wrap;">{!! $markdown->line($comment->comment) !!}</div>
             </div>
-            <div style="white-space: pre-wrap;">{!! $markdown->line($comment->comment) !!}</div>
-        </div>
-        <div class="mt-1 flex relative">
-            @can('reply-to-comment', $comment)
-                <button data-modal-target="replyComment-{{$comment->getKey()}}"
-                        data-modal-toggle="replyComment-{{$comment->getKey()}}"
-                        class="px-5 rounded-2xl border border-gray-500 uppercase hover:bg-teal-400 mr-3" type="button">
-                    @lang('comments::comments.reply')
-                </button>
-            @endcan
-            @can('edit-comment', $comment)
-                <button data-modal-target="editComment-{{$comment->getKey()}}"
-                        data-modal-toggle="editComment-{{$comment->getKey()}}"
-                        class="px-5 rounded-2xl border border-gray-500 uppercase hover:bg-teal-400 mr-3" type="button">
-                    @lang('comments::comments.edit')
-                </button>
-            @endcan
-            @can('delete-comment', $comment)
-                <a href="{{ route('comments.destroy', $comment->getKey()) }}"
-                   onclick="event.preventDefault();document.getElementById('comment-delete-form-{{ $comment->getKey() }}').submit();"
-                   class="px-5 py-1 rounded-2xl border border-gray-500 uppercase hover:bg-red-600 mr-3">@lang('comments::comments.delete')</a>
-                <form id="comment-delete-form-{{ $comment->getKey() }}"
-                      action="{{ route('comments.destroy', $comment->getKey()) }}" method="POST" style="display: none;">
-                    @method('DELETE')
-                    @csrf
-                </form>
-            @endcan
-            <div class="absolute right-0 -top-5 hover:cursor-pointer">
-                <div class="px-5 rounded-2xl border border-gray-500 uppercase bg-teal-400 hover:bg-teal-300 flex">1
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                         class="w-5 h-5 ml-2">
-                        <path
-                                d="M1 8.25a1.25 1.25 0 112.5 0v7.5a1.25 1.25 0 11-2.5 0v-7.5zM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0114 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 01-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 01-1.341-.317l-2.734-1.366A3 3 0 006.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 012.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388z"/>
-                    </svg>
+            <div class="mt-1 flex relative">
+                @can('reply-to-comment', $comment)
+                    <button id="btn-reply-{{$comment->getKey()}}"
+                            class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 uppercase hover:bg-teal-400 mr-3"
+                            type="button">
+                        @lang('comments::comments.reply')
+                    </button>
+                @endcan
+                @can('edit-comment', $comment)
+                    <button data-modal-target="editComment-{{$comment->getKey()}}"
+                            data-modal-toggle="editComment-{{$comment->getKey()}}"
+                            class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 uppercase hover:bg-teal-400 mr-3"
+                            type="button">
+                        @lang('comments::comments.edit')
+                    </button>
+                @endcan
+                @can('delete-comment', $comment)
+                    <a href="{{ route('comments.destroy', $comment->getKey()) }}"
+                       onclick="event.preventDefault();document.getElementById('comment-delete-form-{{ $comment->getKey() }}').submit();"
+                       class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 uppercase hover:bg-teal-400 mr-3">@lang('comments::comments.delete')</a>
+                    <form id="comment-delete-form-{{ $comment->getKey() }}"
+                          action="{{ route('comments.destroy', $comment->getKey()) }}" method="POST"
+                          style="display: none;">
+                        @method('DELETE')
+                        @csrf
+                    </form>
+                @endcan
+                <div class="absolute right-0 -top-5 hover:cursor-pointer">
+                    <div class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-sky-800 uppercase bg-white hover:bg-teal-300 flex items-center">
+                        1
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                             class="w-5 h-5 ml-2">
+                            <path
+                                    d="M1 8.25a1.25 1.25 0 112.5 0v7.5a1.25 1.25 0 11-2.5 0v-7.5zM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0114 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 01-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 01-1.341-.317l-2.734-1.366A3 3 0 006.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 012.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388z"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 @can('edit-comment', $comment)
     <div id="editComment-{{$comment->getKey()}}" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
          class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
@@ -100,7 +109,74 @@
 @endcan
 
 @can('reply-to-comment', $comment)
+    <div id="reply-{{$comment->getKey()}}" class="ml-16 hidden md:ml-24">
+        <div class="mx-4 lg:mx-24 mt-5">
+            <div class="">
+                @if($errors->has('commentable_type'))
+                    <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-gray-800 dark:text-red-400"
+                         role="alert">
+                        <span class="font-medium">{{ $errors->first('commentable_type') }}</span>
+                    </div>
+                @endif
+                @if($errors->has('commentable_id'))
+                    <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-gray-800 dark:text-red-400"
+                         role="alert">
+                        <span class="font-medium">{{ $errors->first('commentable_id') }}</span>
+                    </div>
+                @endif
+                <form method="POST" action="{{ route('comments.reply', $comment->getKey()) }}">
+                    @csrf
+                    @honeypot
+                    <input type="hidden" name="commentable_type" value="\{{ get_class($model) }}"/>
+                    <input type="hidden" name="commentable_id" value="{{ $model->getKey() }}"/>
 
+                    {{-- Guest commenting --}}
+                    @if(isset($guest_commenting) and $guest_commenting == true)
+                        <div>
+                            <div class="mt-3">
+                                <input type="text" class="rounded-lg px-5 py-2 w-full"
+                                       name="guest_name"
+                                       placeholder="@lang('comments::comments.enter_your_name_here')"/>
+                                @error('guest_name')
+                                <div class="text-red-500">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="mt-3">
+                                <input type="email" class="rounded-lg px-5 py-2 w-full"
+                                       name="guest_email"
+                                       placeholder="@lang('comments::comments.enter_your_email_here')"/>
+                                @error('guest_email')
+                                <div class="text-red-500">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                    @endif
+
+                    <textarea
+                            class="mt-3 rounded-lg px-5 py-2 w-full h-auto md:h-24 @if($errors->has('message')) is-invalid @endif"
+                            name="message" placeholder="@lang('comments::comments.enter_your_message_here')"
+                            required></textarea>
+                    <div class="w-full relative mb-8">
+                        <div class="absolute right-0">
+                            <button type="button" id="cancel-reply-{{$comment->getKey()}}"
+                                    class="px-1 md:px-5 md:py-2 rounded-lg hover:drop-shadow-xl bg-gray-200 hover:bg-gray-300">
+                                @lang('comments::comments.cancel')
+                            </button>
+                            <button type="submit"
+                                    class="px-1 md:px-5 md:py-2 rounded-lg bg-red-600 hover:bg-red-400 hover:drop-shadow-xl text-white ">
+                                @lang('comments::comments.reply')
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br/>
+    </div>
 @endcan
     <?php
     if (!isset($indentationLevel)) {
@@ -132,3 +208,12 @@
         ])
     @endforeach
 @endif
+<script>
+    document.addEventListener('click', (e) => {
+        if (document.getElementById('btn-reply-{{$comment->getKey()}}').contains(e.target)) {
+            document.getElementById('reply-{{$comment->getKey()}}').classList.toggle('hidden')
+        } else if(document.getElementById('cancel-reply-{{$comment->getKey()}}').contains(e.target)) {
+            document.getElementById('reply-{{$comment->getKey()}}').classList.add('hidden')
+        }
+    })
+</script>

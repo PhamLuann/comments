@@ -50,25 +50,26 @@
     <div class="my-5 mx-4 lg:mx-24 flex justify-end">
         <div>
             <span class="opacity-80">@lang('comments::comments.you_must_login_to_post_a_comment')</span>
-            <a href="{{ route('login') }}" class="border border-sky-500 px-5 py-1 rounded-lg bg-teal-500 hover:bg-teal-600 uppercase">@lang('comments::comments.log_in')</a>
+            <a href="{{ route('login') }}"
+               class="border border-sky-500 px-5 py-1 rounded-lg bg-teal-500 hover:bg-teal-600 uppercase">@lang('comments::comments.log_in')</a>
         </div>
     </div>
 @endauth
 
-@foreach($grouped_comments as $comment_id => $comments)
-    {{-- Process parent nodes --}}
-    @if($comment_id == '')
-        @foreach($comments as $comment)
-            <div class="mb-12">
+<div class="mx-4 px-1 lg:mx-24 h-[700px] overflow-y-scroll">
+    @foreach($grouped_comments as $comment_id => $comments)
+        {{-- Process parent nodes --}}
+        @if($comment_id == '')
+            @foreach($comments as $comment)
                 @include('comments::_comment', [
                 'comment' => $comment,
                 'grouped_comments' => $grouped_comments,
                 'maxIndentationLevel' => $maxIndentationLevel ?? 3
             ])
-            </div>
-        @endforeach
-    @endif
-@endforeach
+            @endforeach
+        @endif
+    @endforeach
+</div>
 
 @isset ($perPage)
     {{ $grouped_comments->links() }}

@@ -43,9 +43,8 @@
                 </div>
             @endif
 
-            <textarea class="mt-3 rounded-lg px-5 py-2 w-full @if($errors->has('message')) is-invalid @endif"
-                      name="message"
-                      rows="4" placeholder="@lang('comments::comments.enter_your_message_here')" required></textarea>
+            <textarea class="mt-3 rounded-lg px-5 py-2 w-full h-auto md:h-24 @if($errors->has('message')) is-invalid @endif"
+                      name="message" placeholder="@lang('comments::comments.enter_your_message_here')" required></textarea>
             <div class="w-full relative mb-8">
                 <button type="submit"
                         class="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-400 hover:drop-shadow-xl text-white absolute right-0">@lang('comments::comments.submit')</button>
