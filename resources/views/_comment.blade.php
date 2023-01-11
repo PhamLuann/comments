@@ -45,6 +45,7 @@
                 {{--Like--}}
                 @can('reply-to-comment', $comment)
                     <button id="btn-reply-{{$comment->getKey()}}"
+                            onclick="reply({{$comment->getKey()}})"
                             class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 hover:bg-teal-400 mr-3"
                             type="button">
                         @lang('comments::comments.reply')
@@ -118,7 +119,7 @@
                     <textarea required class="block p-1 w-full border border-sky-500" name="message"
                               rows="3">{{ $comment->comment }}</textarea>
                     <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-                        <button data-modal-hide="staticModal" type="submit"
+                        <button data-modal-hide="editComment-{{$comment->getKey()}}" type="submit"
                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             @lang('comments::comments.update')
                         </button>
@@ -188,7 +189,7 @@
                             required></textarea>
                     <div class="w-full relative mb-8">
                         <div class="absolute right-0">
-                            <button type="button" id="cancel-reply-{{$comment->getKey()}}"
+                            <button type="button" onclick="cancelReply({{$comment->getKey()}})"
                                     class="px-1 md:px-5 md:py-2 rounded-lg hover:drop-shadow-xl bg-gray-200 hover:bg-gray-300">
                                 @lang('comments::comments.cancel')
                             </button>
@@ -234,20 +235,16 @@
         ])
     @endforeach
 @endif
-<script>
-    document.addEventListener('click', (e) => {
-        if (document.getElementById('btn-reply-{{$comment->getKey()}}').contains(e.target)) {
-            document.getElementById('reply-{{$comment->getKey()}}').classList.toggle('hidden')
-        } else if (document.getElementById('cancel-reply-{{$comment->getKey()}}').contains(e.target)) {
-            document.getElementById('reply-{{$comment->getKey()}}').classList.add('hidden')
-        }
-    })
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
         integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript">
-
+    function reply(comment_id){
+        document.getElementById('reply-'+comment_id).classList.toggle('hidden')
+    }
+    function cancelReply(comment_id){
+        document.getElementById('reply-'+comment_id).classList.add('hidden')
+    }
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
