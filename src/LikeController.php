@@ -17,21 +17,39 @@ class LikeController extends Controller{
         $this->like = new $Like;
     }
 
-    public function like(Request $request){
+    public function doLike(Request $request){
+        $comment_id = $request->get('comment_id');
+        $exist = (new static())::check($comment_id);
+        if($exist){
+            $this->unLike($comment_id);
+            return redirect()->back();
+        }else{
+            $this->like($comment_id);
+            return redirect()->back();
+        }
+    }
+    public static function check($comment_id){
+        $exist = (new static())->like->where([
+            'user_id' => Auth::id(),
+            'comment_id' => $comment_id,
+        ])->first();
+        return $exist ? true : false;
+    }
+    public function like($comment_id){
         $this->like->create([
             'user_id' => Auth::id(),
-            'comment_id' => $request->get('comment_id'),
+            'comment_id' => $comment_id,
         ]);
-        return redirect()->back();
     }
 
-    public function unLike(Request $request){
+    public function unLike($comment_id){
         $this->like->where([
             'user_id' => Auth::id(),
-            'comment_id' => $request->get('comment_id')
+            'comment_id' => $comment_id
         ])->delete();
-        return redirect()->back();
     }
 
-
+    public function viewUserLike(Request $request){
+        return response()->json(['success'=>'Got Simple Ajax Request.']);
+    }
 }

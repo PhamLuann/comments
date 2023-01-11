@@ -1,5 +1,6 @@
 @inject('markdown', 'Parsedown')
 @php
+    use Laravelista\Comments\LikeController;
     // TODO: There should be a better place for this.
     $markdown->setSafeMode(true);
 @endphp
@@ -24,9 +25,27 @@
                 <div style="white-space: pre-wrap;">{!! $markdown->line($comment->comment) !!}</div>
             </div>
             <div class="mt-1 flex relative">
+                {{--Like--}}
+                @auth()
+                    <div class="hover:cursor-pointer flex items-center mr-3">
+                        <form action="{{route('like')}}" method="post">
+                            @csrf
+                            <input value="{{$comment->getKey()}}" name="comment_id" hidden="true">
+                            <button class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-sky-800 bg-white hover:bg-teal-300 flex items-center @if(LikeController::check($comment->getKey())) bg-teal-400 @endif"
+                                    @auth() @else disabled @endauth>
+                                @if(LikeController::check($comment->getKey()))
+                                    Unlike
+                                @else
+                                    Like
+                                @endif
+                            </button>
+                        </form>
+                    </div>
+                @endauth
+                {{--Like--}}
                 @can('reply-to-comment', $comment)
                     <button id="btn-reply-{{$comment->getKey()}}"
-                            class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 uppercase hover:bg-teal-400 mr-3"
+                            class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 hover:bg-teal-400 mr-3"
                             type="button">
                         @lang('comments::comments.reply')
                     </button>
@@ -34,7 +53,7 @@
                 @can('edit-comment', $comment)
                     <button data-modal-target="editComment-{{$comment->getKey()}}"
                             data-modal-toggle="editComment-{{$comment->getKey()}}"
-                            class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 uppercase hover:bg-teal-400 mr-3"
+                            class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 hover:bg-teal-400 mr-3"
                             type="button">
                         @lang('comments::comments.edit')
                     </button>
@@ -42,7 +61,7 @@
                 @can('delete-comment', $comment)
                     <a href="{{ route('comments.destroy', $comment->getKey()) }}"
                        onclick="event.preventDefault();document.getElementById('comment-delete-form-{{ $comment->getKey() }}').submit();"
-                       class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 uppercase hover:bg-teal-400 mr-3">@lang('comments::comments.delete')</a>
+                       class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-500 hover:bg-teal-400 mr-3">@lang('comments::comments.delete')</a>
                     <form id="comment-delete-form-{{ $comment->getKey() }}"
                           action="{{ route('comments.destroy', $comment->getKey()) }}" method="POST"
                           style="display: none;">
@@ -50,20 +69,23 @@
                         @csrf
                     </form>
                 @endcan
-                <div class="absolute right-0 -top-5 hover:cursor-pointer">
-                    <form action="{{route('like')}}" method="post">
-                        @csrf
-                        <input value="{{$comment->getKey()}}" name="comment_id" hidden="true">
-                        <button class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-sky-800 uppercase bg-white hover:bg-teal-300 flex items-center">
-                            {{$comment->like()->count()}}
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                 class="w-5 h-5 ml-2 text-sky-500">
-                                <path
-                                        d="M1 8.25a1.25 1.25 0 112.5 0v7.5a1.25 1.25 0 11-2.5 0v-7.5zM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0114 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 01-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 01-1.341-.317l-2.734-1.366A3 3 0 006.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 012.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388z"/>
-                            </svg>
-                        </button>
-                    </form>
+                {{--view Like--}}
+                <div class="absolute right-1 md:right-10 -top-5 hover:cursor-pointer">
+                    <button id="btn-view-{{$comment->getKey()}}"
+                            class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-sky-500 text-sky-500 uppercase bg-white flex items-center"
+                            >
+                        {{$comment->like()->count()}}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                             class="w-5 h-5 ml-2">
+                            <path
+                                    d="M1 8.25a1.25 1.25 0 112.5 0v7.5a1.25 1.25 0 11-2.5 0v-7.5zM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0114 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 01-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 01-1.341-.317l-2.734-1.366A3 3 0 006.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 012.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388z"/>
+                        </svg>
+                    </button>
+                    <div id="view-{{$comment->getKey()}}" class="bg-gray-200 absolute right-0 drop-shadow-2xl z-10 hidden">
+
+                    </div>
                 </div>
+                {{--view Like--}}
             </div>
         </div>
     </div>
@@ -220,4 +242,27 @@
             document.getElementById('reply-{{$comment->getKey()}}').classList.add('hidden')
         }
     })
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+        integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $("#btn-view-{{$comment->getKey()}}").click(function(){
+        $.ajax({
+            type:'POST',
+            url:"{{ route('view') }}",
+            data:{},
+            success:function(data){
+                alert(data.success);
+            }
+        });
+
+    });
 </script>
