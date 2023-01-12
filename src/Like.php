@@ -16,4 +16,8 @@ class Like extends Model{
     public function comment(){
         return $this->belongsTo(Config::get('comments.model'));
     }
+
+    public function user(){
+        return $this->belongsTo(Config::get('comments.user'));
+    }
 }
