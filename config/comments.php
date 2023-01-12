@@ -9,6 +9,7 @@ return [
      */
     'model' => \Laravelista\Comments\Comment::class,
     'like' => \Laravelista\Comments\Like::class,
+    'user' => \App\Models\User::class,
     /**
      * You can customize the behaviour of these permissions by
      * creating your own and pointing to it here.

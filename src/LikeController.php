@@ -50,6 +50,7 @@ class LikeController extends Controller{
     }
 
     public function viewUserLike(Request $request){
-        return response()->json(['success'=>'Got Simple Ajax Request.']);
+
+        return response()->json(['ok'=>$request->comment_id]);
     }
 }

@@ -72,7 +72,7 @@
                 @endcan
                 {{--view Like--}}
                 <div class="absolute right-1 md:right-10 -top-5 hover:cursor-pointer">
-                    <button id="btn-view-{{$comment->getKey()}}"
+                    <button id="btn-view-{{$comment->getKey()}}" onclick="viewUserLike({{$comment->id}})"
                             class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-sky-500 text-sky-500 uppercase bg-white flex items-center"
                             >
                         {{$comment->like()->count()}}
@@ -245,21 +245,28 @@
     function cancelReply(comment_id){
         document.getElementById('reply-'+comment_id).classList.add('hidden')
     }
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
 
-    $("#btn-view-{{$comment->getKey()}}").click(function(){
-        $.ajax({
-            type:'POST',
-            url:"{{ route('view') }}",
-            data:{},
-            success:function(data){
-                alert(data.success);
+    // view user like
+    function viewUserLike(comment_id){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
-    });
+        $.ajax({
+            type: "post",
+            cache: false,
+            url: "/view",
+            data:{
+                comment_id: comment_id,
+            },
+            dataType: "json",
+            success: function(data){
+                alert(data.ok)
+            },
+            error: function(error){
+                alert('error')
+            }
+        });
+    }
 </script>
