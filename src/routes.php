@@ -8,5 +8,5 @@ Route::delete('comments/{comment}', Config::get('comments.controller') . '@destr
 Route::put('comments/{comment}', Config::get('comments.controller') . '@update')->name('comments.update');
 Route::post('comments/{comment}', Config::get('comments.controller') . '@reply')->name('comments.reply');
 
-Route::post('like', [Config::get('comments.likeController'), 'dolike'])->name('like');
-Route::post('view', [Config::get('comments.likeController'), 'viewUserLike'])->name('view');
+Route::post('like', [Config::get('comments.likeController'), 'dolike']);
+Route::post('view', [Config::get('comments.likeController'), 'viewUserLike']);

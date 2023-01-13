@@ -28,18 +28,14 @@
                 {{--Like--}}
                 @auth()
                     <div class="hover:cursor-pointer flex items-center mr-3">
-                        <form action="{{route('like')}}" method="post">
-                            @csrf
-                            <input value="{{$comment->getKey()}}" name="comment_id" hidden="true">
-                            <button class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-sky-800 bg-white hover:bg-teal-300 flex items-center @if(LikeController::check($comment->getKey())) bg-teal-400 @endif"
-                                    @auth() @else disabled @endauth>
-                                @if(LikeController::check($comment->getKey()))
-                                    Unlike
-                                @else
-                                    Like
-                                @endif
-                            </button>
-                        </form>
+                        <button class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-sky-800 bg-white hover:bg-teal-300 flex items-center @if(LikeController::check($comment->getKey())) bg-teal-400 @endif"
+                                @auth() @else disabled @endauth onclick="like_comment({{$comment->id}})" id="like-{{$comment->id}}">
+                            @if(LikeController::check($comment->getKey()))
+                                Unlike
+                            @else
+                                Like
+                            @endif
+                        </button>
                     </div>
                 @endauth
                 {{--Like--}}
@@ -74,7 +70,7 @@
                 <div class="absolute right-1 md:right-10 -top-5 hover:cursor-pointer">
                     <button id="btn-view-{{$comment->getKey()}}" onclick="viewUserLike({{$comment->id}})"
                             class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-sky-500 text-sky-500 uppercase bg-white flex items-center">
-                        {{$comment->like()->count()}}
+                        <p id="count-like-{{$comment->getKey()}}">{{$comment->like()->count()}}</p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                              class="w-5 h-5 ml-2">
                             <path
@@ -242,17 +238,18 @@
     function cancelReply(comment_id) {
         document.getElementById('reply-' + comment_id).classList.add('hidden')
     }
-    function close_user_like(){
+
+    function close_user_like() {
         document.getElementById('view-user-like').remove()
     }
 
     // view user like
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     function viewUserLike(comment_id) {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
         $.ajax({
             type: "post",
             cache: false,
@@ -269,6 +266,30 @@
             }
         });
     }
+    function like_comment(comment_id) {
+        $.ajax({
+            type: "post",
+            url: "/like",
+            data: {
+                comment_id: comment_id,
+            },
+            dataType: "json",
+            success: function (data){
+                if(data.status == "like"){
+                    document.getElementById('like-'+comment_id).innerText = 'Unlike'
+                    document.getElementById('like-'+comment_id).classList.add('bg-teal-400')
+                    document.getElementById('count-like-'+comment_id).innerText = data.count
+                }else if(data.status == "unlike"){
+                    document.getElementById('like-'+comment_id).innerText = 'Like'
+                    document.getElementById('like-'+comment_id).classList.remove('bg-teal-400')
+                    document.getElementById('count-like-'+comment_id).innerText = data.count
+                }
+            },
+            error: function (error) {
+                alert('error')
+            }
+        })
+    }
 
-    
+
 </script>

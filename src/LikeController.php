@@ -7,7 +7,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 
-class LikeController extends Controller{
+class LikeController extends Controller
+{
     private $like;
 
     public function __construct()
@@ -17,39 +18,59 @@ class LikeController extends Controller{
         $this->like = new $Like;
     }
 
-    public function doLike(Request $request){
+    public function doLike(Request $request)
+    {
         $comment_id = $request->get('comment_id');
         $exist = (new static())::check($comment_id);
-        if($exist){
-            $this->unLike($comment_id);
-            return redirect()->back();
-        }else{
-            $this->like($comment_id);
-            return redirect()->back();
+        if ($exist) {
+            if($this->unLike($comment_id)){
+                $count = $this->countLike($comment_id);
+                return json_encode(['status'=>"unlike", 'count'=>$count]);
+            }
+            return false;
+        } else {
+            if($this->like($comment_id)){
+                $count = $this->countLike($comment_id);
+                return json_encode(['status'=>"like", 'count'=>$count]);
+            }
+            return false;
         }
     }
-    public static function check($comment_id){
+
+    public static function check($comment_id)
+    {
         $exist = (new static())->like->where([
             'user_id' => Auth::id(),
             'comment_id' => $comment_id,
         ])->first();
         return $exist ? true : false;
     }
-    public function like($comment_id){
-        $this->like->create([
+
+    public function like($comment_id)
+    {
+        $like = $this->like->create([
             'user_id' => Auth::id(),
             'comment_id' => $comment_id,
         ]);
+        return $like ? true : false;
     }
 
-    public function unLike($comment_id){
-        $this->like->where([
+    public function unLike($comment_id)
+    {
+        $unlike = $this->like->where([
             'user_id' => Auth::id(),
             'comment_id' => $comment_id
         ])->delete();
+        return $unlike ? true : false;
     }
 
-    public function viewUserLike(Request $request){
+    public function countLike($comment_id){
+        $count = $this->like->where('comment_id', $comment_id)->count();
+        return $count;
+    }
+
+    public function viewUserLike(Request $request)
+    {
         $commentClass = Config::get('comments.model');
         $comment = $commentClass::find($request->comment_id);
         $likes = $comment->like()->get();
@@ -63,12 +84,12 @@ class LikeController extends Controller{
                 <h1 class="font-bold mt-2">User like</h1> <hr>
                 <div class="flex justify-center">
                 <div>';
-        foreach ($likes as $like){
+        foreach ($likes as $like) {
             $output .=
                 '<div class="flex items-center mt-2"><img class="w-6 h-6 rounded-full"
              src="https://www.gravatar.com/avatar/{{ md5($comment->commenter->email ?? $comment->guest_email) }}.jpg?s=64"
              alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">';
-             $output .= "<h5 class='ml-3 capitalize'>{$like->user()->first()->name}</h5></div>";
+            $output .= "<h5 class='ml-3 capitalize'>{$like->user()->first()->name}</h5></div>";
         }
         $output .= '</div></div></div>';
 
