@@ -39,11 +39,7 @@
         $grouped_comments = $comments->groupBy('child_id');
     }
 @endphp
-<div class="flex ">
-    <div id="user-like" class="absolute right-1/2 mt-[10%] rounded-2xl bg-sky-200 px-44 shadow-lg shadow-indigo-500/50">
-
-    </div>
-</div>
+<div id="user-like" class="absolute w-full flex mt-[10%] justify-center z-30"></div>
 @auth
     @include('comments::_form')
 @elseif(Config::get('comments.guest_commenting') == true)
@@ -55,7 +51,7 @@
         <div>
             <span class="opacity-80">@lang('comments::comments.you_must_login_to_post_a_comment')</span>
             <a href="{{ route('login') }}"
-               class="border border-sky-500 px-5 py-1 rounded-lg bg-teal-500 hover:bg-teal-600 uppercase">@lang('comments::comments.log_in')</a>
+               class="border border-sky-500 px-2 py-1 rounded-lg bg-teal-500 hover:bg-teal-600 uppercase">@lang('comments::comments.log_in')</a>
         </div>
     </div>
 @endauth

@@ -242,6 +242,9 @@
     function cancelReply(comment_id) {
         document.getElementById('reply-' + comment_id).classList.add('hidden')
     }
+    function close_user_like(){
+        document.getElementById('view-user-like').remove()
+    }
 
     // view user like
     function viewUserLike(comment_id) {
@@ -266,4 +269,6 @@
             }
         });
     }
+
+    
 </script>
