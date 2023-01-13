@@ -1,4 +1,4 @@
-<div class="mx-4 lg:mx-24 mt-5">
+<div class="mt-5">
     <div class="">
         @if($errors->has('commentable_type'))
             <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-gray-800 dark:text-red-400"

@@ -22,9 +22,9 @@
     });
     function viewUserLike(comment_id) {
         $.ajax({
-            type: "post",
+            type: "get",
             cache: false,
-            url: "/view",
+            url: "{{route('viewLike')}}",
             data: {
                 comment_id: comment_id,
             },
@@ -39,8 +39,8 @@
     }
     function like_comment(comment_id) {
         $.ajax({
-            type: "post",
-            url: "/like",
+            type: "get",
+            url: "{{route('like')}}",
             data: {
                 comment_id: comment_id,
             },

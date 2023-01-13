@@ -28,7 +28,7 @@
                 {{--Like--}}
                 @auth()
                     <div class="hover:cursor-pointer flex items-center mr-3">
-                        <button class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-sky-800 bg-white hover:bg-teal-300 flex items-center @if(LikeController::check($comment->getKey())) bg-teal-400 @endif"
+                        <button class="px-2 md:px-5 text-xs md:text-base rounded-2xl border border-gray-700 hover:bg-teal-300 flex items-center @if(LikeController::check($comment->getKey())) bg-teal-400 @endif"
                                 @auth() @else disabled @endauth onclick="like_comment({{$comment->id}})" id="like-{{$comment->id}}">
                             @if(LikeController::check($comment->getKey()))
                                 Unlike

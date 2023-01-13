@@ -7,7 +7,7 @@
 @endphp
 
 @if($comments->count() < 1)
-    <div class="mx-4 md:mx-24">@lang('comments::comments.there_are_no_comments')</div>
+    <div>@lang('comments::comments.there_are_no_comments')</div>
 @endif
 
 @php
@@ -47,7 +47,7 @@
         'guest_commenting' => true
     ])
 @else
-    <div class="my-5 mx-4 lg:mx-24 flex justify-end">
+    <div class="my-5 flex justify-end">
         <div>
             <span class="opacity-80">@lang('comments::comments.you_must_login_to_post_a_comment')</span>
             <a href="{{ route('login') }}"
@@ -56,7 +56,7 @@
     </div>
 @endauth
 
-<div class="mx-4 px-1 lg:mx-24 h-[700px] overflow-y-scroll">
+<div class="max-h-[700px] overflow-y-scroll">
     @foreach($grouped_comments as $comment_id => $comments)
         {{-- Process parent nodes --}}
         @if($comment_id == '')
