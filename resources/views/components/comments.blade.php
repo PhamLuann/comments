@@ -39,7 +39,7 @@
         $grouped_comments = $comments->groupBy('child_id');
     }
 @endphp
-<div id="user-like" class="absolute w-full flex mt-[10%] justify-center z-30"></div>
+<div id="user-like" class="fixed top-0 left-0 right-0 w-full flex mt-[10%] justify-center z-30"></div>
 @auth
     @include('comments::_form')
 @elseif(Config::get('comments.guest_commenting') == true)

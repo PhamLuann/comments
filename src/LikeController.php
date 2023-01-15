@@ -75,8 +75,8 @@ class LikeController extends Controller
         $comment = $commentClass::find($request->comment_id);
         $likes = $comment->like()->get();
         $output =
-            '<div class="relative w-4/5 md:w-1/2 xl:w-1/3 bg-sky-300 shadow-xl shadow-indigo-500/50 rounded-lg px-5 py-2" id="view-user-like">
-                <button class="absolute right-2 z-40 hover:text-red-500" onclick="close_user_like()">
+            '<div class="relative py-5 w-4/5 md:w-1/2 xl:w-1/3 bg-sky-300 shadow-xl shadow-indigo-500/50 rounded-lg px-5 py-2" id="view-user-like">
+                <button class="absolute top-2 right-2 z-40 hover:text-red-500" onclick="close_user_like()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -86,9 +86,10 @@ class LikeController extends Controller
                 <div>';
         foreach ($likes as $like) {
             $output .=
-                '<div class="flex items-center mt-2"><img class="w-6 h-6 rounded-full"
-             src="https://www.gravatar.com/avatar/{{ md5($comment->commenter->email ?? $comment->guest_email) }}.jpg?s=64"
-             alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">';
+                '<div class="flex items-center mt-5 border-b">
+                    <img class="w-6 h-6 rounded-full"
+                     src="https://www.gravatar.com/avatar/{{ md5($comment->commenter->email ?? $comment->guest_email) }}.jpg?s=64"
+                     alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">';
             $output .= "<h5 class='ml-3 capitalize'>{$like->user()->first()->name}</h5></div>";
         }
         $output .= '</div></div></div>';

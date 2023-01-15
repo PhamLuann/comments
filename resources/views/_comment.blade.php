@@ -85,7 +85,7 @@
 </div>
 @can('edit-comment', $comment)
     <div id="editComment-{{$comment->getKey()}}" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
-         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+         class="fixed top-0 left-0 right-0 z-50  hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
         <div class="relative w-full h-full max-w-2xl md:h-auto">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -153,7 +153,7 @@
                     @if(isset($guest_commenting) and $guest_commenting == true)
                         <div>
                             <div class="mt-3">
-                                <input type="text" class="rounded-lg px-5 py-2 w-full"
+                                <input type="text" class="rounded-lg px-5 py-2 w-full border border-orange-600"
                                        name="guest_name"
                                        placeholder="@lang('comments::comments.enter_your_name_here')"/>
                                 @error('guest_name')
@@ -163,7 +163,7 @@
                                 @enderror
                             </div>
                             <div class="mt-3">
-                                <input type="email" class="rounded-lg px-5 py-2 w-full"
+                                <input type="email" class="rounded-lg px-5 py-2 w-full border border-orange-600"
                                        name="guest_email"
                                        placeholder="@lang('comments::comments.enter_your_email_here')"/>
                                 @error('guest_email')
@@ -176,7 +176,7 @@
                     @endif
 
                     <textarea
-                            class="mt-3 rounded-lg px-5 py-2 w-full h-auto md:h-24 @if($errors->has('message')) is-invalid @endif"
+                            class="mt-3 border border-orange-600 rounded-lg px-5 py-2 w-full h-auto md:h-24 @if($errors->has('message')) is-invalid @endif"
                             name="message" placeholder="@lang('comments::comments.enter_your_message_here')"
                             required></textarea>
                     <div class="w-full relative mb-8">

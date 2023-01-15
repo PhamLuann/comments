@@ -23,7 +23,7 @@
             @if(isset($guest_commenting) and $guest_commenting == true)
                 <div>
                     <div class="mt-3">
-                        <input type="text" class="rounded-lg px-5 py-2 w-full"
+                        <input type="text" class="rounded-lg px-5 py-2 w-full border border-orange-600"
                                name="guest_name" placeholder="@lang('comments::comments.enter_your_name_here')"/>
                         @error('guest_name')
                         <div class="text-red-500">
@@ -32,7 +32,7 @@
                         @enderror
                     </div>
                     <div class="mt-3">
-                        <input type="email" class="rounded-lg px-5 py-2 w-full"
+                        <input type="email" class="rounded-lg px-5 py-2 w-full border border-orange-600"
                                name="guest_email" placeholder="@lang('comments::comments.enter_your_email_here')"/>
                         @error('guest_email')
                         <div class="text-red-500">
@@ -43,7 +43,7 @@
                 </div>
             @endif
 
-            <textarea class="mt-3 rounded-lg px-5 py-2 w-full h-auto md:h-24 @if($errors->has('message')) is-invalid @endif"
+            <textarea class="mt-3 border border-orange-600 rounded-lg px-5 py-2 w-full h-auto md:h-24 @if($errors->has('message')) is-invalid @endif"
                       name="message" placeholder="@lang('comments::comments.enter_your_message_here')" required></textarea>
             <div class="w-full relative mb-8">
                 <button type="submit"
