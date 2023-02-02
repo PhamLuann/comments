@@ -2,6 +2,8 @@
 
 namespace Laravelista\Comments;
 
+use App\Events\LikeComment;
+use App\Events\LikeCommentEvent;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -87,8 +89,8 @@ class LikeController extends Controller
         foreach ($likes as $like) {
             $output .=
                 '<div class="flex items-center mt-5 border-b">
-                    <img class="w-6 h-6 rounded-full"
-                     src="https://www.gravatar.com/avatar/{{ md5($comment->commenter->email ?? $comment->guest_email) }}.jpg?s=64"
+                    <img class="w-6 h-6 rounded-full border border-gray-900"
+                     src="https://cdn3d.iconscout.com/3d/premium/thumb/boy-avatar-6299533-5187865.png"
                      alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">';
             $output .= "<h5 class='ml-3 capitalize'>{$like->user()->first()->name}</h5></div>";
         }

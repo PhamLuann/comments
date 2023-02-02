@@ -6,8 +6,8 @@
 @endphp
 <div class="">
     <div id="comment-{{ $comment->getKey() }}" class="flex mb-5 @if($comment->parent != null) ml-14 md:ml-24 @endif">
-        <img class="w-12 h-12 md:w-20 md:h-20 rounded-full"
-             src="https://www.gravatar.com/avatar/{{ md5($comment->commenter->email ?? $comment->guest_email) }}.jpg?s=64"
+        <img class="w-12 h-12 md:w-20 md:h-20 rounded-full border border-gray-900"
+             src="https://cdn3d.iconscout.com/3d/premium/thumb/boy-avatar-6299533-5187865.png"
              alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">
         <div class="w-full ml-2 md:ml-4">
             <div class="min-h-[48px] md:min-h-[80px] w-full bg-gray-200 rounded-lg pl-4 pt-3 border-b border-gray-700">
